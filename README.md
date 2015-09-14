@@ -1,11 +1,36 @@
-# quiz
+# Quiz #
 
+Andrew Ouyang
 
-Q: Given a list of words like https://github.com/NodePrime/quiz/blob/master/word.list find the longest compound-word in the list, which is also a concatenation of other sub-words that exist in the list. The program should allow the user to input different data. The finished solution shouldn't take more than one hour. Any programming language can be used, but Go is preferred.
+## Question ##
 
+Given a list of words find the longest compound-word in the list, which is also a concatenation of other sub-words that exist in the list.
 
-Fork this repo, add your solution and documentation on how to compile and run your solution, and then issue a Pull Request. 
+## Solution ##
 
-Obviously, we are looking for a fresh solution, not based on others' code.
+Make two passes on the input file:
 
+1. store all words in a data structure
+2. determine which words are compound
 
+In the first pass, all words are stored in a space-efficient data structure. This solution uses the `github.com/tchap/go-patricia/patricia` trie.
+
+In the second pass, every word is checked to determine if it is compound with respect to the words stored in the trie. A word is compound if
+
+* a substring of the word starting at the beginning of the word is itself a word
+* the remainder of the word is either itself a word or another compound word
+
+Note that this recursive check can be skipped if the word is not longer than the current longest compound word.
+
+## Usage ##
+
+The code for the solution is in `quiz/compound.go`. To install the trie dependency, run
+
+	go get -u github.com/tchap/go-patricia/patricia
+
+See https://github.com/tchap/go-patricia for more details. Then, from inside the `quiz` folder, run
+
+	go build compound.go
+	./compound [filename]
+
+where filename is the name of the file containing the input words. If no file is passed in, `word.list` will be used by default.
